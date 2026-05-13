@@ -61,6 +61,19 @@ st.markdown(
         background: #e53e3e; color: white; font-size: 12px; font-weight: 700;
         margin-left: 6px;
     }
+    .tag-chip {
+        display: inline-block; padding: 3px 10px; border-radius: 999px;
+        background: rgba(99,179,237,.12); color: #63b3ed;
+        font-size: 12px; border: 1px solid rgba(99,179,237,.25);
+        margin: 2px 3px 2px 0; cursor: pointer; text-decoration: none;
+        transition: background .15s, color .15s;
+    }
+    .tag-chip:hover { background: rgba(99,179,237,.28); color: #90cdf4; }
+    .tag-chip.active { background: #1a9fff; color: white; border-color: #1a9fff; }
+    .tag-filter-bar {
+        background: #161d2e; border: 1px solid rgba(99,179,237,.15);
+        border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -168,6 +181,16 @@ games = load_steam(CSV_PATH)
 all_genres = sorted(g for g in games["genre_primary"].dropna().unique() if g)
 all_titles = sorted(t for t in games["name"].dropna().unique() if t)
  
+# Semua unique tags, diurutkan berdasarkan frekuensi
+from collections import Counter
+_tag_counter: Counter = Counter()
+for row_tags in games["tags"].dropna():
+    for t in row_tags.split(","):
+        t = t.strip()
+        if t:
+            _tag_counter[t] += 1
+all_tags_ranked = [t for t, _ in _tag_counter.most_common()]  # urut terbanyak dulu
+ 
  
 # ── TF-IDF (dicompute sekali, di-cache di session) ────────────────────────────
 @st.cache_resource
@@ -269,6 +292,10 @@ def rec_hybrid(
     return cb.sort_values("hybrid_score", ascending=False).head(top_n)
  
  
+# ── Session state ─────────────────────────────────────────────────────────────
+if "active_tags" not in st.session_state:
+    st.session_state.active_tags = set()
+ 
 # ── Sidebar filters ───────────────────────────────────────────────────────────
 st.sidebar.title("⚙️ Filters")
  
@@ -305,6 +332,10 @@ def get_filtered_data() -> pd.DataFrame:
     elif f_mode == "coop":
         df = df[df["is_coop"]]
  
+    # Filter berdasarkan tag aktif (AND: harus punya semua tag yang dipilih)
+    for tag in st.session_state.active_tags:
+        df = df[df["tags"].str.contains(re.escape(tag), case=False, na=False)]
+ 
     return df
  
  
@@ -325,27 +356,45 @@ tab_discover, tab_detail, tab_recommend, tab_analytics = st.tabs(
  
 # ── DISCOVER ──────────────────────────────────────────────────────────────────
 with tab_discover:
+ 
+    # ── Tag filter bar ────────────────────────────────────────────────────────
+    if st.session_state.active_tags:
+        active_list = sorted(st.session_state.active_tags)
+        chips_html = " ".join(
+            f"<span class='tag-chip active'>{t} ✕</span>" for t in active_list
+        )
+        st.markdown(
+            f"<div class='tag-filter-bar'>🏷️ <b>Filter tag aktif:</b> {chips_html}</div>",
+            unsafe_allow_html=True,
+        )
+        if st.button("✕ Hapus semua tag filter", key="clear_tags"):
+            st.session_state.active_tags = set()
+            st.rerun()
+ 
+    # ── Metrics ───────────────────────────────────────────────────────────────
+    filt = get_filtered_data()  # re-evaluate after tag state may have changed
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Titles", f"{len(filt):,}")
-    c2.metric("Free Games", int(filt["is_free"].sum()))  # FIX: is_free boolean
+    c2.metric("Free Games", int(filt["is_free"].sum()))
     c3.metric("Positivity ≥ 90%", int((filt["positivity"] >= 90).sum()))
     meta_mean = filt["metacritic_score"].mean()
     c4.metric("Avg Metacritic", f"{meta_mean:.0f}" if pd.notna(meta_mean) else "—")
  
-    search  = st.text_input("Search game titles")
-    sort_by = st.selectbox(
+    search  = st.text_input("🔍 Search game titles")
+    col_sort, col_n = st.columns([2, 1])
+    sort_by = col_sort.selectbox(
         "Sort By",
         ["score", "recommendations", "positivity", "avg_playtime_forever", "peak_ccu", "year", "metacritic_score"],
     )
-    n_show = st.number_input("Number of Games", 8, 2000, 24, step=8)
+    n_show = col_n.number_input("Show", 8, 2000, 24, step=8)
  
     browse = filt.copy()
     if search:
         browse = browse[browse["name"].str.contains(search, case=False, na=False)]
-    browse = browse.sort_values(sort_by, ascending=False, na_position="last").head(n_show)
+    browse = browse.sort_values(sort_by, ascending=False, na_position="last").head(int(n_show))
  
     for _, row in browse.iterrows():
-        price_tag = ""
+        # Price tag
         if row["is_free"]:
             price_tag = "<span class='free-pill'>FREE</span>"
         elif row.get("discount_pct", 0) > 0:
@@ -356,12 +405,20 @@ with tab_discover:
         else:
             price_tag = f"${row['price_usd']:.2f}" if pd.notna(row["price_usd"]) else "—"
  
-        # FIX: tampilkan header_image dari CSV
+        # Thumbnail
         img_html = ""
         if row.get("header_image", ""):
             img_html = f"<img src='{row['header_image']}' onerror=\"this.style.display='none'\">"
  
         steam_url = f"https://store.steampowered.com/app/{int(row['app_id'])}/"
+ 
+        # Clickable tag chips — klik = filter by tag via query param workaround
+        tag_chips = ""
+        if row.get("tags"):
+            for t in [x.strip() for x in str(row["tags"]).split(",")][:10]:
+                active_cls = " active" if t in st.session_state.active_tags else ""
+                tag_chips += f"<span class='tag-chip{active_cls}' data-tag='{t}'>{t}</span>"
+ 
         st.markdown(
             f"""
             <div class='game-card'>
@@ -375,21 +432,37 @@ with tab_discover:
                         <h4 style='margin:0 0 4px;display:inline'>{row['name']}</h4>
                         <span style='font-size:12px;color:#4a9eff;margin-left:6px'>↗ Steam</span>
                     </a>
-                    <p style='margin:4px 0 0;color:#94a3b8;font-size:13px'>
+                    <p style='margin:2px 0;color:#94a3b8;font-size:13px'>
                         {row.get('genre_primary', '')} ·
                         {int(row['year']) if pd.notna(row['year']) else '—'} ·
                         {price_tag}
                     </p>
-                    <p style='margin:4px 0 0;font-size:13px'>
-                        👍 {row.get('positivity', 0):.1f}% &nbsp;|&nbsp;
-                        👥 {int(row.get('recommendations', 0)):,} recs &nbsp;|&nbsp;
+                    <p style='margin:2px 0;font-size:13px'>
+                        👍 {row.get('positivity', 0):.1f}%&nbsp;|&nbsp;
+                        👥 {int(row.get('recommendations', 0)):,} recs&nbsp;|&nbsp;
                         🕐 {row.get('avg_playtime_forever', 0)/60:.0f}h avg
                     </p>
+                    <div style='margin-top:6px'>{tag_chips}</div>
                 </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
+ 
+        # Tag filter buttons — satu per tag, tersembunyi rapi di expander
+        if row.get("tags"):
+            row_tags = [x.strip() for x in str(row["tags"]).split(",")][:10]
+            with st.expander("🏷️ Filter by tag", expanded=False):
+                cols = st.columns(5)
+                for i, t in enumerate(row_tags):
+                    is_active = t in st.session_state.active_tags
+                    label = f"✓ {t}" if is_active else t
+                    if cols[i % 5].button(label, key=f"tag_{row['app_id']}_{t}"):
+                        if is_active:
+                            st.session_state.active_tags.discard(t)
+                        else:
+                            st.session_state.active_tags.add(t)
+                        st.rerun()
  
  
 # ── DETAIL ────────────────────────────────────────────────────────────────────
@@ -455,15 +528,31 @@ with tab_detail:
  
  
 # ── RECOMMEND ────────────────────────────────────────────────────────────────
+# Nama algoritma yang lebih keren
+ALGO_NAMES = {
+    "🎯 Precision Filter": "rule",
+    "🧬 DNA Match  (TF-IDF)": "cb",
+    "🔥 Crowd Wisdom": "cf",
+    "⚡ Neural Blend": "hybrid",
+}
+ 
 with tab_recommend:
-    method = st.selectbox(
-        "Algorithm",
-        ["Rule-Based", "Content-Based (TF-IDF)", "Collaborative Filtering", "Hybrid"],
-    )
+    method_label = st.selectbox("Engine", list(ALGO_NAMES.keys()))
+    method = ALGO_NAMES[method_label]
+ 
+    # Deskripsi singkat tiap algoritma
+    algo_desc = {
+        "rule":   "Filter presisi berdasarkan genre, harga, dan mode bermain. Cocok kalau kamu udah tau mau apa.",
+        "cb":     "Cari game yang DNA-nya mirip — genre, tags, dan developer yang sama. Makin banyak yang cocok, makin tinggi skornya.",
+        "cf":     "Lihat apa yang disukai komunitas. Game yang direkomendasikan banyak orang dengan sentimen positif tinggi akan muncul duluan.",
+        "hybrid": "Gabungin DNA Match + Crowd Wisdom. Bisa atur berapa persen bobot masing-masing sesuai selera.",
+    }
+    st.caption(algo_desc[method])
+    st.divider()
  
     recs = pd.DataFrame()
  
-    if method == "Rule-Based":
+    if method == "rule":
         genres   = st.multiselect("Genres", all_genres)
         max_price = st.slider("Max Price ($)", 0, 150, 30)
         min_pos2  = st.slider("Min Positivity (%)", 0, 100, 70)
@@ -471,30 +560,31 @@ with tab_recommend:
         mode      = st.selectbox("Mode", ["any", "singleplayer", "multiplayer", "coop"])
         top_n     = st.number_input("Top N", 5, 30, 10)
  
-        if st.button("🚀 Run Engine"):
+        if st.button("🚀 Find Games"):
             recs = rec_rule(games, genres, max_price, min_pos2, min_recs, mode, int(top_n))
  
-    elif method == "Content-Based (TF-IDF)":
+    elif method == "cb":
         ref   = st.selectbox("Reference Game", all_titles, key="cb")
         top_n = st.number_input("Top N", 5, 30, 10, key="cbn")
  
-        if st.button("🚀 Run Engine"):
+        if st.button("🚀 Find Games"):
             recs = rec_cb(games, ref, int(top_n))
  
-    elif method == "Collaborative Filtering":
+    elif method == "cf":
         genres   = st.multiselect("Genres", all_genres, key="cf")
         min_pos2  = st.slider("Min Positivity (%)", 0, 100, 75, key="cfp")
         top_n     = st.number_input("Top N", 5, 30, 10, key="cfn")
  
-        if st.button("🚀 Run Engine"):
+        if st.button("🚀 Find Games"):
             recs = rec_cf(games, genres, min_pos2, int(top_n))
  
-    else:  # Hybrid
+    else:  # hybrid
         ref   = st.selectbox("Reference Game", all_titles, key="hy")
-        cb_w  = st.slider("Content-Based Weight", 0.0, 1.0, 0.6, 0.05)
+        cb_w  = st.slider("DNA Match Weight", 0.0, 1.0, 0.6, 0.05,
+                          help="0 = murni Crowd Wisdom, 1 = murni DNA Match")
         top_n = st.number_input("Top N", 5, 30, 10, key="hyn")
  
-        if st.button("🚀 Run Engine"):
+        if st.button("🚀 Find Games"):
             recs = rec_hybrid(games, ref, int(top_n), cb_w)
  
     if not recs.empty:
