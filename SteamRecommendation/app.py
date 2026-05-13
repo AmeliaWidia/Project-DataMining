@@ -182,21 +182,53 @@ def load_steam(path):
 
 
 games = load_steam(CSV_PATH)
-# Pastikan kolom genre_primary ada
-if "genre_primary" not in games.columns:
-    if "genres" in games.columns:
-        games["genre_primary"] = (
-            games["genres"]
-            .astype(str)
-            .str.split(",")
-            .str[0]
-            .str.strip()
-        )
-    else:
-        games["genre_primary"] = ""
-# Pastikan kolom name ada
-if "name" not in games.columns:
-    games["name"] = ""
+
+# SAFETY CHECK: pastikan semua kolom penting tersedia
+# ==============================================================
+required_columns = {
+    "year": np.nan,
+    "genre_primary": "",
+    "name": "",
+    "price_usd": np.nan,
+    "positivity": np.nan,
+    "recommendations": 0,
+    "metacritic_score": np.nan,
+    "avg_playtime_forever": 0,
+    "peak_ccu": 0,
+    "is_free": False,
+    "is_singleplayer": False,
+    "is_multiplayer": False,
+    "is_coop": False,
+}
+
+for col, default_value in required_columns.items():
+    if col not in games.columns:
+        games[col] = default_value
+
+# Jika year belum ada, coba ekstrak dari release_date
+if games["year"].isna().all() and "release_date" in games.columns:
+    games["year"] = (
+        games["release_date"]
+        .astype(str)
+        .str.extract(r"((?:19|20)\d{2})")[0]
+        .astype(float)
+    )
+
+# Jika genre_primary kosong, buat dari genres
+if (
+    games["genre_primary"].astype(str).str.strip().eq("").all()
+    and "genres" in games.columns
+):
+    games["genre_primary"] = (
+        games["genres"]
+        .astype(str)
+        .str.split(",")
+        .str[0]
+        .str.strip()
+    )
+
+# Pastikan name string
+games["name"] = games["name"].fillna("").astype(str)
 
 # List genre dan title
 all_genres = sorted(
@@ -206,6 +238,15 @@ all_genres = sorted(
 all_titles = sorted(
     [t for t in games["name"].dropna().unique() if str(t).strip()]
 )
+
+# SIDEBAR YEAR RANGE
+# ==============================================================
+if games["year"].notna().any():
+    min_year = int(games["year"].dropna().min())
+    max_year = int(games["year"].dropna().max())
+else:
+    min_year = 2000
+    max_year = 2026
 
 # ==============================================================
 # RECOMMENDATION FUNCTIONS
