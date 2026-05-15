@@ -3451,10 +3451,9 @@ def section_header(title: str, subtitle: str = "") -> str:
 def about_us_section() -> str:
     """Render the About Us section with team members and project description."""
     team = [
-        ("🎮", "Nama Anggota 1", "Project Lead & Backend", "Bertanggung jawab atas arsitektur sistem, pipeline data Steam, dan algoritma rekomendasi hybrid."),
-        ("🎨", "Nama Anggota 2", "UI/UX Designer", "Merancang tampilan cinematic dan pengalaman pengguna yang imersif dari hero sampai card game."),
-        ("📊", "Nama Anggota 3", "Data Analyst", "Mengolah dataset Steam, membangun model TF-IDF, dan mengoptimalkan scoring quality signal."),
-        ("⚡", "Nama Anggota 4", "Full-Stack Developer", "Mengintegrasikan semua komponen Streamlit, filter global, dan navigasi same-page."),
+        ("🎮", "Sharliz Mayalpen Zafirah", "5052241003"),
+        ("🎨", "Amelia Widiastuti", "5052241007"),
+        ("📊", "Marvelio Jonathan Wijaya", "5052241017"),
     ]
     cards = "".join(f"""
     <div class="team-card">
