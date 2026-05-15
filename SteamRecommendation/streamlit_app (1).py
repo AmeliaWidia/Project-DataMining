@@ -3451,9 +3451,9 @@ def section_header(title: str, subtitle: str = "") -> str:
 def about_us_section() -> str:
     """Render the About Us section with team members and project description."""
     team = [
-        ("🎮", "Sharliz Mayalpen Zafirah", "5052241003"),
-        ("🎨", "Amelia Widiastuti", "5052241007"),
-        ("📊", "Marvelio Jonathan Wijaya", "5052241017"),
+        ("🎮", "Sharliz Mayalpen Zafirah", "5052241003", ""),
+        ("🎨", "Amelia Widiastuti", "5052241007", ""),
+        ("📊", "Marvelio Jonathan Wijaya", "5052241017", ""),
     ]
     cards = "".join(f"""
     <div class="team-card">
