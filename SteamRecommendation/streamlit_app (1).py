@@ -228,22 +228,6 @@ def inject_css() -> None:
             color: var(--muted) !important;
         }
 
-        /* Task 3: teks statistik di Library Intelligence lebih terang */
-        [data-testid="stMetricValue"] {
-            color: #FDC787 !important;
-            font-size: 1.6rem !important;
-            font-weight: 800 !important;
-        }
-        [data-testid="stMetricLabel"] p,
-        [data-testid="stMetricLabel"] {
-            color: #C7DCE2 !important;
-            font-size: .82rem !important;
-            font-weight: 600 !important;
-        }
-        [data-testid="stMetricDelta"] {
-            color: #68d391 !important;
-        }
-
         section[data-testid="stSidebar"] {
             background:
                 radial-gradient(circle at 20% 0%, rgba(253, 199, 135, 0.10), transparent 16rem),
@@ -1866,6 +1850,161 @@ def inject_css() -> None:
             border-radius: inherit !important;
         }
 
+        /* Premium simplified UX pass: immersive sidebar + intentional feature icons */
+        section[data-testid="stSidebar"] {
+            background:
+                radial-gradient(circle at 18% 0%, rgba(253,199,135,.16), transparent 15rem),
+                radial-gradient(circle at 88% 24%, rgba(165,197,204,.10), transparent 13rem),
+                linear-gradient(180deg, rgba(2,19,52,.82), rgba(1,9,28,.92) 52%, rgba(0,5,17,.96)) !important;
+            border-right: 1px solid rgba(253,199,135,.14) !important;
+            box-shadow: 28px 0 90px rgba(0,0,0,.42), inset -1px 0 0 rgba(255,255,255,.04) !important;
+            backdrop-filter: blur(24px) saturate(1.12) !important;
+        }
+        section[data-testid="stSidebar"]::before {
+            content: "";
+            position: absolute;
+            inset: 12px 10px;
+            pointer-events: none;
+            border-radius: 30px;
+            border: 1px solid rgba(165,197,204,.10);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,.035), transparent 36%),
+                radial-gradient(circle at 50% 0%, rgba(253,199,135,.075), transparent 14rem);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 0 54px rgba(39,90,145,.08);
+        }
+        section[data-testid="stSidebar"] > div {
+            position: relative;
+            z-index: 1;
+            padding: 1.35rem 1rem 2rem !important;
+        }
+        .brand-card {
+            margin: 4px 0 22px !important;
+            padding: 19px 17px 17px !important;
+            border-radius: 28px !important;
+            background:
+                radial-gradient(circle at 76% 8%, rgba(253,199,135,.22), transparent 8rem),
+                radial-gradient(circle at 18% 95%, rgba(165,197,204,.10), transparent 9rem),
+                linear-gradient(145deg, rgba(1,42,97,.40), rgba(2,19,52,.72)) !important;
+            border: 1px solid rgba(253,199,135,.26) !important;
+            box-shadow: 0 24px 70px rgba(0,0,0,.38), 0 0 44px rgba(253,199,135,.08), inset 0 1px 0 rgba(255,255,255,.10) !important;
+            backdrop-filter: blur(18px) !important;
+        }
+        .brand-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(105deg, transparent 18%, rgba(253,199,135,.08), transparent 42%);
+            transform: translateX(-130%) skewX(-18deg);
+            animation: scanline 7.5s ease-in-out infinite;
+        }
+        .brand-mark {
+            width: 58px !important;
+            height: 58px !important;
+            border-radius: 20px !important;
+            box-shadow: 0 0 38px rgba(253,199,135,.28), 0 16px 34px rgba(0,0,0,.30) !important;
+        }
+        .brand-card h2 {
+            font-size: 1.32rem !important;
+            letter-spacing: -.055em !important;
+        }
+        .brand-card p {
+            max-width: 95%;
+            color: rgba(199,220,226,.78) !important;
+        }
+        .sidebar-note {
+            margin: -4px 0 18px !important;
+            padding: 12px 14px !important;
+            border-radius: 18px !important;
+            color: rgba(199,220,226,.78) !important;
+            background: rgba(165,197,204,.065) !important;
+            border: 1px solid rgba(165,197,204,.14) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 14px 36px rgba(0,0,0,.18) !important;
+            backdrop-filter: blur(14px) !important;
+        }
+        section[data-testid="stSidebar"] hr {
+            margin: 18px 0 !important;
+            border-color: rgba(253,199,135,.12) !important;
+        }
+        section[data-testid="stSidebar"] h3 {
+            margin: 0 0 10px !important;
+            color: #fff !important;
+            font-size: .84rem !important;
+            letter-spacing: .14em !important;
+            text-transform: uppercase !important;
+        }
+        section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
+        section[data-testid="stSidebar"] label p {
+            color: rgba(238,248,250,.86) !important;
+            font-size: .80rem !important;
+            font-weight: 900 !important;
+            letter-spacing: -.01em !important;
+        }
+        section[data-testid="stSidebar"] .stSlider,
+        section[data-testid="stSidebar"] .stSelectbox,
+        section[data-testid="stSidebar"] .stMultiSelect,
+        section[data-testid="stSidebar"] .stTextInput {
+            margin-bottom: 1.05rem !important;
+        }
+        section[data-testid="stSidebar"] .stTextInput input,
+        section[data-testid="stSidebar"] div[data-baseweb="select"] > div,
+        section[data-testid="stSidebar"] div[data-baseweb="input"] > div {
+            min-height: 44px !important;
+            border-radius: 17px !important;
+            background: linear-gradient(135deg, rgba(2,19,52,.72), rgba(1,42,97,.28)) !important;
+            border: 1px solid rgba(165,197,204,.18) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 30px rgba(0,0,0,.18) !important;
+            transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease !important;
+        }
+        section[data-testid="stSidebar"] .stTextInput input:focus,
+        section[data-testid="stSidebar"] div[data-baseweb="select"] > div:hover,
+        section[data-testid="stSidebar"] div[data-baseweb="input"] > div:hover {
+            border-color: rgba(253,199,135,.34) !important;
+            box-shadow: 0 0 0 1px rgba(253,199,135,.08), 0 0 30px rgba(253,199,135,.10), inset 0 1px 0 rgba(255,255,255,.08) !important;
+        }
+        section[data-testid="stSidebar"] div[data-baseweb="tag"] {
+            background: rgba(253,199,135,.10) !important;
+            border-color: rgba(253,199,135,.22) !important;
+            box-shadow: 0 0 18px rgba(253,199,135,.08) !important;
+        }
+        .feature-card {
+            display: grid;
+            grid-template-columns: 62px 1fr;
+            gap: 15px;
+            align-items: center;
+            min-height: 132px !important;
+        }
+        .feature-icon {
+            position: relative;
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            border-radius: 20px;
+            background:
+                radial-gradient(circle at 30% 20%, rgba(253,199,135,.24), transparent 48%),
+                linear-gradient(145deg, rgba(165,197,204,.14), rgba(39,90,145,.20));
+            border: 1px solid rgba(253,199,135,.22);
+            box-shadow: 0 0 26px rgba(253,199,135,.12), inset 0 1px 0 rgba(255,255,255,.08);
+        }
+        .feature-icon svg {
+            width: 29px;
+            height: 29px;
+            stroke: var(--gold);
+            stroke-width: 1.65;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 9px rgba(253,199,135,.38));
+        }
+        .feature-icon.alt svg {
+            stroke: var(--mist);
+            filter: drop-shadow(0 0 9px rgba(165,197,204,.32));
+        }
+        .feature-copy b { margin-bottom: 7px !important; }
+        .feature-copy span { display: block; }
+
+
         </style>
         """
     )
@@ -3049,8 +3188,9 @@ def render_sidebar_brand() -> None:
             <div class="brand-card">
                 <div class="brand-mark"><img src="{LOGO_SRC}" alt="SteamVault logo"></div>
                 <h2>SteamVault Pro</h2>
-                <p>Premium discovery console untuk analisis, eksplorasi, dan rekomendasi game Steam.</p>
+                <p>Premium gaming platform untuk menemukan game Steam berdasarkan atmosfer, selera, dan sinyal kualitas.</p>
             </div>
+            <div class="sidebar-note">Atur vibe pencarianmu di sini. Filter dibuat ringan supaya fokus tetap ke eksplorasi game, bukan dashboard data.</div>
             """
         )
 
@@ -3114,15 +3254,26 @@ def hero_section(total_games: int, filtered_games: int, data_source: str) -> str
     """
 
 def feature_strip() -> str:
+    icons = {
+        "shield": """<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 3l7 3v5c0 4.7-2.9 8.3-7 10-4.1-1.7-7-5.3-7-10V6l7-3z'/><path d='M9.2 12.2l1.8 1.8 4-4.4'/></svg>""",
+        "target": """<svg viewBox='0 0 24 24' aria-hidden='true'><circle cx='12' cy='12' r='7.5'/><circle cx='12' cy='12' r='3.2'/><path d='M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3'/></svg>""",
+        "spark": """<svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z'/><path d='M18.4 15.3l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z'/></svg>""",
+    }
     items = [
-        ("Discover", "Browse game cards with cinematic covers, gameplay descriptions, badges, value signals, and detail pages."),
-        ("Analyze", "Read market-level insight from genre, price, positivity, and quality distributions."),
-        ("Recommend", "Cari rekomendasi dari kesamaan konten, filter, ulasan pemain, harga, dan variasi hasil."),
-        ("Explain", "Every recommendation includes a readable reason and component score breakdown."),
+        ("Quality signal", "Shielded quality cues from positivity, popularity, playtime, and value so strong games surface faster.", icons["shield"], ""),
+        ("Content match", "Tag, genre, category, and description signals help the platform understand the kind of atmosphere you want.", icons["target"], " alt"),
+        ("Hybrid engine", "A polished blend of taste, player response, rules, value, and discovery diversity for richer recommendations.", icons["spark"], ""),
     ]
-    cards = "".join(f'<div class="feature-card"><b>{esc(title)}</b><span>{esc(desc)}</span></div>' for title, desc in items)
-    return f'<div class="feature-grid">{cards}</div>'
-
+    cards = "".join(
+        f"""
+        <div class="feature-card">
+          <div class="feature-icon{variant}">{icon}</div>
+          <div class="feature-copy"><b>{esc(title)}</b><span>{esc(desc)}</span></div>
+        </div>
+        """
+        for title, desc, icon, variant in items
+    )
+    return f'<div class="feature-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">{cards}</div>'
 
 def section_header(title: str, subtitle: str = "") -> str:
     return f'<div class="section-title"><h3>{esc(title)}</h3><span>{esc(subtitle)}</span></div>'
@@ -3157,17 +3308,19 @@ def top_navigation(active_view: str, active_tag: str = "") -> str:
 inject_css()
 
 render_sidebar_brand()
+
 try:
     if DEFAULT_CSV.exists():
         games = load_games_from_path(str(DEFAULT_CSV))
         data_source = DEFAULT_CSV.name
     else:
-        st.error("CSV tidak ditemukan. Letakkan steam_top_games_2026.csv di folder yang sama dengan app ini.")
+        st.error("Dataset belum ditemukan. Letakkan steam_top_games_2026.csv di folder yang sama dengan app.")
         st.stop()
 except Exception as exc:
     st.error(f"Gagal membaca dataset: {exc}")
     st.stop()
 
+# Simplified public experience: no upload workflow in the UI.
 interactions = None
 
 vectorizer, tfidf_matrix = build_tfidf(tuple(games["content_text"].tolist()))
@@ -3184,27 +3337,27 @@ active_tag_default = [active_tag] if active_tag in all_tags else []
 
 # Sidebar global filters
 st.sidebar.markdown("---")
-st.sidebar.markdown("### Filter global")
+st.sidebar.markdown("### Discovery tuning")
 years = games["year"].dropna()
 if years.empty:
     min_year, max_year = 1990, 2030
 else:
     min_year, max_year = int(years.min()), int(years.max())
-year_range = st.sidebar.slider("Tahun rilis", min_year, max_year, (min_year, max_year))
+year_range = st.sidebar.slider("Era rilis", min_year, max_year, (min_year, max_year))
 price_limit_global = float(np.nanquantile(games["price_effective"].fillna(0), 0.98)) if len(games) else 100.0
 price_limit_global = max(10.0, min(200.0, price_limit_global))
-global_price = st.sidebar.slider("Harga maksimum global ($)", 0.0, float(math.ceil(price_limit_global)), min(60.0, float(math.ceil(price_limit_global))), 1.0)
-global_min_pos = st.sidebar.slider("Minimal positivity global (%)", 0, 100, 0)
-global_genres = st.sidebar.multiselect("Genre global", all_genres, max_selections=5)
+global_price = st.sidebar.slider("Maksimum harga ($)", 0.0, float(math.ceil(price_limit_global)), min(60.0, float(math.ceil(price_limit_global))), 1.0)
+global_min_pos = st.sidebar.slider("Minimal rating positif (%)", 0, 100, 0)
+global_genres = st.sidebar.multiselect("Genre", all_genres, max_selections=5)
 global_tags = st.sidebar.multiselect(
-    "Tag wajib global",
+    "Tag atmosfer",
     all_tags,
     default=active_tag_default,
     max_selections=5,
     key=f"global_tags_{active_tag or 'all'}",
 )
-global_mode = st.sidebar.selectbox("Mode global", ["any", "singleplayer", "multiplayer", "coop"])
-global_search = st.sidebar.text_input("Cari judul")
+global_mode = st.sidebar.selectbox("Mode bermain", ["any", "singleplayer", "multiplayer", "coop"])
+global_search = st.sidebar.text_input("Cari game")
 filtered = apply_global_filters(games, year_range, global_price, global_min_pos, global_genres, global_tags, global_mode, global_search)
 
 render_html(top_navigation(active_view, active_tag))
@@ -3317,7 +3470,6 @@ elif nav_view == "Explore":
         browse = filtered.sort_values(sort_col, ascending=sort_asc, na_position="last").head(n_show)
         render_cards(browse, games, columns=3, active_tag=active_tag)
 
-
 elif nav_view == "Recommend":
     render_html('<span id="recommender"></span>' + section_header("Smart recommender", "hybrid, explainable, configurable"))
     render_html(
@@ -3333,9 +3485,13 @@ elif nav_view == "Recommend":
         "Budget friendly": ["Free to Play", "Indie", "Casual", "Co-op"],
     }
 
-    engine = "Smart Hybrid"
     r1, r2 = st.columns([1.05, 0.95])
     with r1:
+        engine = st.selectbox(
+            "Engine rekomendasi",
+            ["Smart Hybrid", "Content-Based", "Rule-Based", "Collaborative / Ulasan Pemain"],
+            help="Smart Hybrid menggabungkan beberapa sinyal. Mode kolaboratif memakai data interaksi jika diupload; kalau tidak, memakai ulasan dan popularitas pemain sebagai pengganti.",
+        )
         favorite_titles = st.multiselect("Game favorit / referensi", all_titles, max_selections=5)
         preferred_genres = st.multiselect("Genre preferensi", all_genres, max_selections=5)
         preferred_tags = st.multiselect("Tag preferensi", all_tags, max_selections=10)
@@ -3351,6 +3507,14 @@ elif nav_view == "Recommend":
         diversity = st.slider("Diversity penalty", 0.0, 0.60, 0.18, 0.02, help="Lebih tinggi = hasil lebih beragam, mengurangi game yang terlalu mirip satu sama lain.")
 
     weights = {"content": 0.42, "crowd": 0.27, "rule": 0.16, "value": 0.10, "novelty": 0.05}
+    if engine == "Smart Hybrid":
+        with st.expander("Atur bobot hybrid", expanded=False):
+            w1, w2, w3, w4, w5 = st.columns(5)
+            weights["content"] = w1.slider("Content", 0.0, 1.0, weights["content"], 0.05)
+            weights["crowd"] = w2.slider("Ulasan/CF", 0.0, 1.0, weights["crowd"], 0.05)
+            weights["rule"] = w3.slider("Rule", 0.0, 1.0, weights["rule"], 0.05)
+            weights["value"] = w4.slider("Value", 0.0, 1.0, weights["value"], 0.05)
+            weights["novelty"] = w5.slider("Novelty", 0.0, 1.0, weights["novelty"], 0.05)
 
     recs = recommend_games(
         games=games,
@@ -3377,7 +3541,7 @@ elif nav_view == "Recommend":
     else:
         source_label = recs["cf_source"].iloc[0] if "cf_source" in recs.columns else "Ulasan pemain"
         render_html(
-            f"<div class='mini-note'><b>Engine aktif:</b> Smart Hybrid | <b>Sumber sinyal pemain:</b> {esc(source_label)} | Hasil sudah direrank dengan diversity penalty.</div>"
+            f"<div class='mini-note'><b>Engine aktif:</b> {esc(engine)} | <b>Sumber sinyal pemain:</b> {esc(source_label)} | Hasil sudah direrank dengan diversity penalty.</div>"
         )
         render_cards(recs, games, favorite_titles, preferred_tags, columns=3, show_components=True, active_tag=active_tag)
 
@@ -3387,27 +3551,3 @@ elif nav_view == "Recommend":
         fig = px.bar(chart_long, x="score", y="name", color="component", orientation="h", barmode="group", title="Komponen skor top recommendation", labels={"score": "Skor 0-1", "name": "Game"})
         fig.update_yaxes(categoryorder="total ascending")
         st.plotly_chart(clean_plotly(fig, height=470), width="stretch")
-
-        export_cols = [
-            "name",
-            "genre_primary",
-            "year",
-            "price_effective",
-            "positivity",
-            "review_volume",
-            "final_score_pct",
-            "content_component",
-            "crowd_component",
-            "rule_component",
-            "value_component",
-            "novelty_component",
-            "developer",
-            "publisher",
-            "short_description",
-        ]
-        st.download_button(
-            "Download rekomendasi CSV",
-            recs[export_cols].to_csv(index=False).encode("utf-8"),
-            file_name="steamvault_recommendations.csv",
-            mime="text/csv",
-        )
