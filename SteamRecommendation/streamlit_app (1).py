@@ -3663,27 +3663,23 @@ def esc(value: object) -> str:
  
 def about_us_section() -> str:
     team = [
-        # (filename/emoji, name, NRP, bg_color)
-        # Kalau ada foto di folder assets/, ganti emoji dengan nama file, misal "sharliz.jpg"
-        # Kalau tidak ada, fallback otomatis ke SVG inisial dari `name`
+        # (icon_emoji, name, NRP, bg_color)
         ("👩🏻‍💻", "Sharliz Mayalpen Zafirah", "5052241003", "#1A4A7A"),
-        ("👩🏻‍💻", "Amelia Widiastuti",        "5052241007", "#4A2060"),
+        ("👩🏽‍💻", "Amelia Widiastuti",        "5052241007", "#4A2060"),
         ("👨🏻‍💻", "Marvelio Jonathan Wijaya", "5052241017", "#0E4D3A"),
     ]
  
     cards = "".join(
         f"""
         <div class="team-card">
-          <div class="team-avatar">{_avatar_from_assets(
-              filename,
-              "".join([part[:1] for part in re.findall(r"[A-Za-z]+", name)[:2]]).upper() or "SV",
-              bg,
-          )}</div>
+          <div class="team-avatar" style="background: {bg}; font-size: 2.2rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+            {icon}
+          </div>
           <span class="team-name">{esc(name)}</span>
           <span class="team-role">{esc(nrp)}</span>
         </div>
         """
-        for filename, name, nrp, bg in team   # ← 4 variabel sesuai tuple 4 elemen
+        for icon, name, nrp, bg in team
     )
  
     return f"""
@@ -3707,7 +3703,7 @@ def about_us_section() -> str:
           <p>Data yang digunakan berasal dari dataset
           <a href="https://www.kaggle.com/datasets/patelris/steam-top-1495-games-dataset"
           target="_blank" style="color:var(--gold);text-decoration:none;">
-          Kaggle (Steam Top 1495 Games Dataset)</a> pada file <b>steam_top_games_2026.csv</b>.
+          Kaggle (Steam Top 1495 Games Dataset)</a> pada file <i>steam_top_games_2026.csv</i>.
           Setiap row dilengkapi dengan variabel penting seperti genre, <i>tags</i>, harga,
           ulasan pengguna, <i>playtime</i>, Metacritic score, dan estimasi jumlah pemilik.
           Seluruh data telah melalui tahapan <i>preprocessing</i>, pembersihan, dan normalisasi
