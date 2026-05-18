@@ -4107,17 +4107,17 @@ def hero_section(total_games: int, filtered_games: int, data_source: str, games_
             
             <div class="mock-row one">
               <div class="mock-img mock-emoji-wrap">⭐</div>
-              <div class="mock-line"><b>Quality Signal</b><span>{avg_pos}% Positive Base</span><span class="mock-label">Community Approved</span></div>
+              <div class="mock-line"><b>Player Sentiment</b><span>{avg_pos}% Positive Base</span><span class="mock-label">Community Approved</span></div>
               <div class="mock-score"><span class="mock-num">{avg_pos}</span><span class="mock-badge">trusted</span></div>
             </div>
             <div class="mock-row two">
               <div class="mock-img mock-emoji-wrap">🏆</div>
-              <div class="mock-line"><b>Content Match</b><span>{avg_qual}% Quality Index</span><span class="mock-label">Data Driven</span></div>
+              <div class="mock-line"><b>Quality Standard</b><span>{avg_qual}% Quality Index</span><span class="mock-label">Data Driven</span></div>
               <div class="mock-score"><span class="mock-num">{avg_qual}</span><span class="mock-badge">match</span></div>
             </div>
             <div class="mock-row three">
               <div class="mock-img mock-emoji-wrap">⚡</div>
-              <div class="mock-line"><b>Hybrid Engine</b><span>{acc_score}% Accuracy</span><span class="mock-label">Smart Optimized</span></div>
+              <div class="mock-line"><b>Engine Precision</b><span>{acc_score}% Accuracy</span><span class="mock-label">Smart Optimized</span></div>
               <div class="mock-score"><span class="mock-num">{acc_score}</span><span class="mock-badge">optimized</span></div>
             </div>
 
@@ -4146,9 +4146,9 @@ def feature_strip(games_df=None, eval_results: dict = None) -> str:
     # -----------------------------------------------
 
     items = [
-        ("Quality Signal", f"{avg_pos}% Positive Base · Mengukur kualitas game menggunakan data empiris dari sentimen ulasan pemain.", "⭐", ""),
-        ("Content Match", f"{avg_qual}% Quality Index · Mencocokkan deskripsi game dan preferensi user dengan korelasi Pearson.", "🏆", " alt"),
-        ("Hybrid Engine", f"{acc_score}% Accuracy · Teruji secara offline. Menggabungkan selera, aturan, value, dan variasi hasil.", "⚡", ""),
+        ("Player Sentiment", f"{avg_pos}% Positive Base · Mengukur kualitas game menggunakan data empiris dari sentimen ulasan pemain.", "⭐", ""),
+        ("Quality Standard", f"{avg_qual}% Quality Index · Mencocokkan deskripsi game dan preferensi user dengan korelasi Pearson.", "🏆", " alt"),
+        ("Engine Precision", f"{acc_score}% Accuracy · Teruji secara offline. Menggabungkan selera, aturan, value, dan variasi hasil.", "⚡", ""),
     ]
     cards = "".join(
         f"""
